@@ -15,12 +15,13 @@ class MedicalGraph:
         self.g = Graph(
             host="127.0.0.1",  # neo4j 搭载服务器的ip地址，ifconfig可获取到
             http_port=7474,  # neo4j 服务器监听的端口号
-            user="lhy",  # 数据库user name，如果没有更改过，应该是neo4j
-            password="lhy123")
+            user="neo4j",  # 数据库user name，如果没有更改过，应该是neo4j
+            password="123123")
 
     '''读取文件'''
     def read_nodes(self):
         # 共７类节点
+        print("读取文件")
         drugs = [] # 药品
         foods = [] #　食物
         checks = [] # 检查
@@ -157,6 +158,7 @@ class MedicalGraph:
 
     '''建立节点'''
     def create_node(self, label, nodes):
+        print("建立节点")
         count = 0
         for node_name in nodes:
             node = Node(label, name=node_name)
@@ -167,6 +169,7 @@ class MedicalGraph:
 
     '''创建知识图谱中心疾病的节点'''
     def create_diseases_nodes(self, disease_infos):
+        print("创建知识图谱中心疾病的节点")
         count = 0
         for disease_dict in disease_infos:
             node = Node("Disease", name=disease_dict['name'], desc=disease_dict['desc'],
@@ -181,6 +184,7 @@ class MedicalGraph:
 
     '''创建知识图谱实体节点类型schema'''
     def create_graphnodes(self):
+        print("创建知识图谱实体节点类型schema")
         Drugs, Foods, Checks, Departments, Producers, Symptoms, Diseases, disease_infos,rels_check, rels_recommandeat, rels_noteat, rels_doeat, rels_department, rels_commonddrug, rels_drug_producer, rels_recommanddrug,rels_symptom, rels_acompany, rels_category = self.read_nodes()
         self.create_diseases_nodes(disease_infos)
         self.create_node('Drug', Drugs)
@@ -196,9 +200,9 @@ class MedicalGraph:
         self.create_node('Symptom', Symptoms)
         return
 
-
     '''创建实体关系边'''
     def create_graphrels(self):
+        print("创建实体关系边")
         Drugs, Foods, Checks, Departments, Producers, Symptoms, Diseases, disease_infos, rels_check, rels_recommandeat, rels_noteat, rels_doeat, rels_department, rels_commonddrug, rels_drug_producer, rels_recommanddrug,rels_symptom, rels_acompany, rels_category = self.read_nodes()
         self.create_relationship('Disease', 'Food', rels_recommandeat, 'recommand_eat', '推荐食谱')
         self.create_relationship('Disease', 'Food', rels_noteat, 'no_eat', '忌吃')
@@ -214,6 +218,7 @@ class MedicalGraph:
 
     '''创建实体关联边'''
     def create_relationship(self, start_node, end_node, edges, rel_type, rel_name):
+        print("创建实体关联边")
         count = 0
         # 去重处理
         set_edges = []
@@ -236,6 +241,7 @@ class MedicalGraph:
 
     '''导出数据'''
     def export_data(self):
+        print("导出数据")
         Drugs, Foods, Checks, Departments, Producers, Symptoms, Diseases, disease_infos, rels_check, rels_recommandeat, rels_noteat, rels_doeat, rels_department, rels_commonddrug, rels_drug_producer, rels_recommanddrug, rels_symptom, rels_acompany, rels_category = self.read_nodes()
         f_drug = open('drug.txt', 'w+')
         f_food = open('food.txt', 'w+')
@@ -267,4 +273,5 @@ class MedicalGraph:
 
 if __name__ == '__main__':
     handler = MedicalGraph()
-    # handler.export_data()
+    handler.create_graphnodes()
+    handler.create_graphrels()
